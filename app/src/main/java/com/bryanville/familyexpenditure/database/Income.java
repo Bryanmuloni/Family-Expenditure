@@ -31,4 +31,12 @@ public class Income {
         this.incomeDate = incomeDate;
         this.incomeComment = incomeComment;
     }
+
+    public Income(String incomeSource, String incomeAmount, String incomeDate, String incomeComment, String accountNumber) {
+        this.incomeSource = incomeSource;
+        this.incomeAmount = incomeAmount;
+        this.incomeDate = incomeDate;
+        this.incomeComment = incomeComment;
+        this.accountNumber = accountNumber;
+    }
 }
