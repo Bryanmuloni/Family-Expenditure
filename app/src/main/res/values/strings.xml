@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">Family Expenditure</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_add_new_expenditure">Add New Expenditure</string>
+    <string name="title_activity_expenditure_details">Expenditure Details</string>
+    <string name="quantityHint">Enter quantity</string>
+    <string name="itemNameHint">Enter Item name</string>
+    <string name="item_amount_hint">Enter item amount</string>
+    <string name="item_status">Status</string>
+    <string name="itemStatusPaid">Paid</string>
+    <string name="itemStatusCredit">Credit</string>
+    <string name="string_date">Date</string>
+    <string name="date_hint">02/07/2018</string>
+    <string name="comment_hint">Enter comment</string>
+    <string name="string_comment">Comment</string>
+    <string name="action_save">Save Expenditure</string>
+    <string name="string_label_item">Item</string>
+    <string name="string_label_quantity">Quantity</string>
+    <string name="string_label_subtotal">SubTotal</string>
+    <string name="string_label_status">Status</string>
+    <string name="string_label_date">Date</string>
+    <string name="string_label_comment">Comment</string>
+    <string name="pref_key">show_notification</string>
+    <string name="pref_label">Enable Notifications</string>
+    <string name="pref_summary_on">Enabled</string>
+    <string name="pref_not_enabled">Not Enabled</string>
+    <string name="pref_key_color">color_key</string>
+    <string name="pref_color_title">Choose Favourite Color</string>
+
+    <string name="pref_label_yellow">Yellow</string>
+    <string name="pref_label_green">Green</string>
+    <string name="pref_label_purple">Purple</string>
+    <string name="pref_label_blue">Blue</string>
+
+    <string name="pref_color_yellow" translatable="false"></string>
+    <string name="pref_color_green" translatable="false">green</string>
+    <string name="pref_color_purple" translatable="false">purple</string>
+    <string name="pref_color_blue" translatable="false">blue</string>
+    <string name="string_notification_channel">ExpenditureChannel</string>
+    <string name="action_share">Share</string>
+
+</resources>

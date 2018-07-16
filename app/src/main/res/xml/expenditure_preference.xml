@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="@string/pref_key"
+        android:summaryOff="@string/pref_not_enabled"
+        android:summaryOn="@string/pref_summary_on"
+        android:singleLine="true"
+        android:title="@string/pref_label" />
+    <ListPreference
+        android:defaultValue="@string/pref_color_purple"
+        android:entries="@array/pref_color_options_title"
+        android:entryValues="@array/pref_color_options_values"
+        android:title="@string/pref_color_title"
+        android:key="@string/pref_key_color"/>
+</PreferenceScreen>
