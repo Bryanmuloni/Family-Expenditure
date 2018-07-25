@@ -38,5 +38,6 @@
     <string name="pref_color_blue" translatable="false">blue</string>
     <string name="string_notification_channel">ExpenditureChannel</string>
     <string name="action_share">Share</string>
+    <string name="string_date_title">Choose Date</string>
 
 </resources>
