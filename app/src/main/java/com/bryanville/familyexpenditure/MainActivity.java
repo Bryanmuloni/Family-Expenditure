@@ -2,14 +2,14 @@ package com.bryanville.familyexpenditure;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
-import android.arch.persistence.room.Room;
+import android.arch.lifecycle.ViewModelProviders;
+
 import android.content.Intent;
-import android.content.SharedPreferences;
+
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -18,11 +18,12 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bryanville.familyexpenditure.adapters.ExpenditureAdapter;
 import com.bryanville.familyexpenditure.database.Expenditure;
 import com.bryanville.familyexpenditure.database.ExpenditureDatabase;
+import com.bryanville.familyexpenditure.executors.ExpenditureAppExecutors;
 
 import java.util.List;
 
@@ -30,7 +31,9 @@ public class MainActivity extends AppCompatActivity implements ExpenditureAdapte
     private RecyclerView mRecyclerView;
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     ExpenditureAdapter expenditureAdapter;
+    ExpenditureDatabase expenditureDatabase;
     FloatingActionButton fab;
+    ExpenditureViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +42,8 @@ public class MainActivity extends AppCompatActivity implements ExpenditureAdapte
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mRecyclerView = findViewById(R.id.expenditureRecyclerView);
-
+        expenditureDatabase = ExpenditureDatabase.getDatabaseInstance(this);
+        viewModel = ViewModelProviders.of(this).get(ExpenditureViewModel.class);
         fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,46 +63,34 @@ public class MainActivity extends AppCompatActivity implements ExpenditureAdapte
             }
 
             @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                int position = viewHolder.getAdapterPosition();
-                List<Expenditure> expenditures = expenditureAdapter.getExpenditure();
-                getExpenditureDatabaseInstance().expenditureDao().deleteExpenditure(expenditures.get(position));
+            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
+                ExpenditureAppExecutors.getAppExecutorInstance().getDiskIO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        int position = viewHolder.getAdapterPosition();
+                        List<Expenditure> expenditures = expenditureAdapter.getExpenditure();
+                        expenditureDatabase.expenditureDao().deleteExpenditure(expenditures.get(position));
+                        Toast.makeText(MainActivity.this,expenditures.get(position).getItemName()+" has been deleted.",Toast.LENGTH_SHORT).show();
+                    }
+                });
+
 
             }
         }).attachToRecyclerView(mRecyclerView);
-        //retrieveAllExpenditure();
-
-
-    }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
         retrieveAllExpenditure();
+
+
     }
 
     private void retrieveAllExpenditure() {
-        final LiveData<List<Expenditure>> expenditures = getExpenditureDatabaseInstance().expenditureDao().queryAllExpenditure();
-        //ExpenditureViewModel viewModel = ViewModelProviders.of(this).get(ExpenditureViewModel.class);
-        expenditures.observe(this, new Observer<List<Expenditure>>() {
+
+        viewModel.getExpenditureList().observe(this, new Observer<List<Expenditure>>() {
             @Override
             public void onChanged(@Nullable List<Expenditure> list) {
-                Log.d(LOG_TAG, "Database update message from LiveData ");
+                Log.d(LOG_TAG, "Database update message from ViewModel ");
                 expenditureAdapter.refreshLists(list);
             }
         });
-    }
-
-    public ExpenditureDatabase getExpenditureDatabaseInstance() {
-        String dbName = "expenditure_db";
-        ExpenditureDatabase expenditureDatabase = Room.databaseBuilder(MainActivity.this,
-                ExpenditureDatabase.class,
-                dbName)
-                .allowMainThreadQueries()
-                .build();
-        return expenditureDatabase;
-
     }
 
 

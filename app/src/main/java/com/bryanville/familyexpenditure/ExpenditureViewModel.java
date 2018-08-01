@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.bryanville.familyexpenditure.database.Expenditure;
 import com.bryanville.familyexpenditure.database.ExpenditureDatabase;
+import com.bryanville.familyexpenditure.repository.ExpenditureRepository;
 
 import java.util.List;
 
@@ -19,22 +20,20 @@ import java.util.List;
 public class ExpenditureViewModel extends AndroidViewModel {
     private static final String LOG_TAG = ExpenditureViewModel.class.getSimpleName();
     private LiveData<List<Expenditure>> expenditureList;
+    private ExpenditureRepository mRepository;
+
     public ExpenditureViewModel(@NonNull Application application) {
         super(application);
+        mRepository = new ExpenditureRepository(application);
+        expenditureList = mRepository.getExpenditureList();
     }
-    public LiveData<List<Expenditure>> getExpenditureList(){
-        expenditureList = getExpenditureDatabaseInstance().expenditureDao().queryAllExpenditure();
-        Log.d(LOG_TAG,"Actively retrieving expenditure from database");
+
+    public LiveData<List<Expenditure>> getExpenditureList() {
+        Log.d(LOG_TAG, "Actively retrieving expenditure from database");
         return expenditureList;
     }
-    public ExpenditureDatabase getExpenditureDatabaseInstance() {
-        String dbName = "expenditure_db";
-        ExpenditureDatabase expenditureDatabase = Room.databaseBuilder(this.getApplication(),
-                ExpenditureDatabase.class,
-                dbName)
-                .allowMainThreadQueries()
-                .build();
-        return expenditureDatabase;
-
+    public void insertExpenditure(Expenditure expenditure){
+        mRepository.insertSingleExpenditure(expenditure);
     }
+
 }
