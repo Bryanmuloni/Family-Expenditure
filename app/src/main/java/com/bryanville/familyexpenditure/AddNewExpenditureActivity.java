@@ -1,8 +1,11 @@
 package com.bryanville.familyexpenditure;
 
 import android.app.Dialog;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.arch.persistence.room.Room;
 import android.content.DialogInterface;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +20,7 @@ import com.bryanville.familyexpenditure.database.Expenditure;
 import com.bryanville.familyexpenditure.database.ExpenditureDatabase;
 
 import java.util.Calendar;
+import java.util.List;
 
 public class AddNewExpenditureActivity extends AppCompatActivity {
     private EditText itemName;
@@ -72,7 +76,8 @@ public class AddNewExpenditureActivity extends AppCompatActivity {
                 && !exp_date.isEmpty()
                 && !exp_comment.isEmpty()) {
             Expenditure expenditure = new Expenditure(item_name, item_quantity, item_amount, status, exp_date, exp_comment);
-            getExpenditureDatabaseInstance().expenditureDao().insertNewExpenditure(expenditure);
+            ExpenditureViewModel viewModel = ViewModelProviders.of(this).get(ExpenditureViewModel.class);
+            viewModel.insertExpenditure(expenditure);
             Toast.makeText(this, expenditure.getItemName() + " with " + expenditure.getExpenditureStatus() + " status expenditure saved", Toast.LENGTH_LONG).show();
             NotificationUtils.remindNewExpenditureAdded(this, item_name, exp_comment);
             finish();
@@ -81,16 +86,6 @@ public class AddNewExpenditureActivity extends AppCompatActivity {
         }
     }
 
-    public ExpenditureDatabase getExpenditureDatabaseInstance() {
-        String dbName = "expenditure_db";
-        ExpenditureDatabase expenditureDatabase = Room.databaseBuilder(AddNewExpenditureActivity.this,
-                ExpenditureDatabase.class,
-                dbName)
-                .allowMainThreadQueries()
-                .build();
-        return expenditureDatabase;
-
-    }
 
     public void chooseDateDialog(View view) {
         createDateDialog();
